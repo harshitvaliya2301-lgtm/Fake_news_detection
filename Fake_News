@@ -1,0 +1,103 @@
+
+
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+     
+
+data = {
+    "text": [
+        "Government announces new education policy for students",
+        "Scientists discover water on Mars after new research",
+        "Aliens landed in a university campus in Gujarat last night",
+        "Prime Minister addresses the nation on economic growth",
+        "Drinking salt water cures all diseases instantly",
+        "New technology startup creates affordable electric bikes",
+        "Fake currency notes distributed through social media links",
+        "India wins international award for renewable energy efforts",
+        "Click this link to earn 1 crore rupees in one day",
+        "University introduces AI-based learning platform",
+        "Vaccines cause people to turn into zombies",
+        "Stock market reaches record high this week",
+        "Man claims mobile phone can charge itself without electricity",
+        "Students develop AI system to detect fake news",
+        "Earth will stop rotating next year according to sources"
+    ],
+    "label": [
+        "REAL", "REAL", "FAKE", "REAL", "FAKE",
+        "REAL", "FAKE", "REAL", "FAKE", "REAL",
+        "FAKE", "REAL", "FAKE", "REAL", "FAKE"
+    ]
+}
+
+df = pd.DataFrame(data)
+df
+
+     
+text	label
+0	Government announces new education policy for ...	REAL
+1	Scientists discover water on Mars after new re...	REAL
+2	Aliens landed in a university campus in Gujara...	FAKE
+3	Prime Minister addresses the nation on economi...	REAL
+4	Drinking salt water cures all diseases instantly	FAKE
+5	New technology startup creates affordable elec...	REAL
+6	Fake currency notes distributed through social...	FAKE
+7	India wins international award for renewable e...	REAL
+8	Click this link to earn 1 crore rupees in one day	FAKE
+9	University introduces AI-based learning platform	REAL
+10	Vaccines cause people to turn into zombies	FAKE
+11	Stock market reaches record high this week	REAL
+12	Man claims mobile phone can charge itself with...	FAKE
+13	Students develop AI system to detect fake news	REAL
+14	Earth will stop rotating next year according t...	FAKE
+
+X = df['text']
+y = df['label']
+
+     
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+     
+
+vectorizer = TfidfVectorizer(stop_words='english')
+
+X_train_tfidf = vectorizer.fit_transform(X_train)
+X_test_tfidf = vectorizer.transform(X_test)
+
+     
+
+model = LogisticRegression()
+model.fit(X_train_tfidf, y_train)
+
+
+     
+LogisticRegression()
+In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+
+y_pred = model.predict(X_test_tfidf)
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Model Accuracy:", accuracy)
+
+
+     
+Model Accuracy: 0.3333333333333333
+
+news = ["Government announced a new education policy for universities"]
+
+news_tfidf = vectorizer.transform(news)
+prediction = model.predict(news_tfidf)
+
+print("Prediction:", prediction[0])
+
+     
+Prediction: FAKE
